@@ -19,7 +19,7 @@ function setPageLoading(isLoading) {
 function redirectIfLoggedIn() {
 	if (sessionStorage.getItem('isLoggedIn') === 'true') {
 		setPageLoading(true)
-		window.location.replace('home.html')
+		window.location.replace('index.html')
 	}
 }
 
@@ -32,7 +32,7 @@ function checkLogin() {
 		setPageLoading(true)
 		sessionStorage.setItem('isLoggedIn', 'true')
 		localStorage.removeItem('isLoggedIn')
-		window.location.replace('home.html')
+		window.location.replace('index.html')
 	} else {
 		setPageLoading(false)
 		sessionStorage.removeItem('isLoggedIn')
