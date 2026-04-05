@@ -10,14 +10,9 @@
 </head>
 
 <body>
-
   <div class="dashboard-wrapper">
     <aside class="sidebar">
-      <div class="logo">
-        <a href="./home.html" class="logo">
-          Admin
-        </a>
-      </div>
+      <div class="logo"><a class="logo" href="./home.html">Admin</a></div>
       <nav class="menu">
         <a href="home.html" class="active">📊 Dashboard</a>
         <a href="./clientlar.html">👥 Clients</a>
@@ -27,26 +22,28 @@
 
     <main class="main-content">
       <header>
-        <h1>Moliya Tahlili</h1>
+        <h1>Dashboard</h1>
       </header>
 
       <div class="cards">
+        <div class="card blue">
+          <h3>JAMI SOTUV</h3>
+          <span class="value" id="totalSales">0 UZS</span>
+        </div>
+
         <div class="card green">
           <h3>DOXOD (Tushum)</h3>
-          <span class="value" id="income">12,628,349</span>
-          <p>Jami tushgan naqd pul</p>
+          <span class="value" id="income">0 UZS</span>
         </div>
 
         <div class="card red">
-          <h3>RASXOD (Xarajat)</h3>
-          <span class="value" id="expense">5,400,000</span>
-          <p>Operatsion xarajatlar</p>
+          <h3>RASXOD (Qarzdorlik)</h3>
+          <span class="value" id="expense">0 UZS</span>
         </div>
 
         <div class="card purple">
-          <h3>BALANS</h3>
-          <span class="value" id="balance">7,228,349</span>
-          <p>Kassadagi sof qoldiq</p>
+          <h3>KASSADA QOLDIQ</h3>
+          <span class="value" id="balance">0 UZS</span>
         </div>
       </div>
 
@@ -63,7 +60,6 @@
   </div>
 
   <script src="./js/home.js"></script>
-
 </body>
 
 </html>

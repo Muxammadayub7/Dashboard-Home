@@ -1,60 +1,42 @@
-/**
- * Dashboard sahifasidagi statistika va raqamlarni jonlantirish
- */
+// 🔗 Sening eng oxirgi (Version 8) URL-manziling
+const WEB_APP_URL =
+	'https://script.google.com/macros/s/AKfycbx8Vy2VdLJhPe_PxSe8IXC7aUGpxv-y2G8MkVOBmvrc491WlvhMIvoTSa68ObQStfwF/exec'
+
 function updateDashboardStats() {
-	// 1. Moliya sahifasida saqlangan hamma ma'lumotlarni olamiz
-	// Agar baza bo'sh bo'lsa, bo'sh massiv [] qaytaradi
-	const history = JSON.parse(localStorage.getItem('financeHistory')) || []
+	// 1. Google'dan javob kelganda ishlaydigan funksiya
+	window.handleResponse = function (data) {
+		console.log("Sheetsdan kelgan ma'lumot:", data)
 
-	let totalIn = 0 // Jami Kirim (Doxod)
-	let totalOut = 0 // Jami Chiqim (Rasxod)
-
-	// 2. Bazadagi har bir amalni aylanib chiqib hisoblaymiz
-	history.forEach(item => {
-		// Raqamni matn ko'rinishidan butun son ko'rinishiga o'tkazamiz
-		const amount = parseInt(item.amount) || 0
-
-		if (item.type === 'kirim') {
-			totalIn += amount // Agar turi kirim bo'lsa qo'shamiz
-		} else if (item.type === 'chiqim') {
-			totalOut += amount // Agar turi chiqim bo'lsa qo'shamiz
+		const fmt = val => {
+			if (!val || val === 'null' || val === 'undefined' || val === '')
+				return '0 UZS'
+			// Raqam bo'lmagan hamma narsani tozalaymiz (bo'sh joy, so'm va h.k)
+			const cleanNum = String(val).replace(/[^0-9]/g, '')
+			const num = parseInt(cleanNum) || 0
+			return num.toLocaleString('uz-UZ') + ' UZS'
 		}
-	})
 
-	// 3. Sof balansni hisoblaymiz
-	const currentBalance = totalIn - totalOut
+		// 2. HTML ID-larni Google'dan kelgan kalitlar bilan bog'laymiz
+		const mapping = {
+			totalSales: data.sales, // doGet ichidagi 'sales'
+			income: data.income, // doGet ichidagi 'income'
+			expense: data.expense, // doGet ichidagi 'expense'
+			balance: data.balance, // doGet ichidagi 'balance'
+		}
 
-	// 4. HTML elementlarini topamiz
-	const incomeEl = document.getElementById('income')
-	const expenseEl = document.getElementById('expense')
-	const balanceEl = document.getElementById('balance')
-
-	// 5. Natijalarni chiroyli formatda ekranga chiqaramiz
-	// toLocaleString() - raqamlarni 12,628,349 ko'rinishida ajratib beradi
-	if (incomeEl) {
-		incomeEl.innerText = totalIn.toLocaleString() + ' UZS'
-	}
-
-	if (expenseEl) {
-		expenseEl.innerText = totalOut.toLocaleString() + ' UZS'
-	}
-
-	if (balanceEl) {
-		balanceEl.innerText = currentBalance.toLocaleString() + ' UZS'
-
-		// Agar balans minusga kirib ketsa, raqamni qizil rangda ko'rsatamiz
-		if (currentBalance < 0) {
-			balanceEl.style.color = '#e74c3c' // Qizil rang
-		} else {
-			balanceEl.style.color = '#2ecc71' // Yashil rang (ixtiyoriy)
+		for (let id in mapping) {
+			const el = document.getElementById(id)
+			if (el) {
+				el.innerText = fmt(mapping[id])
+			}
 		}
 	}
+
+	// 3. Script element yaratib, ma'lumotni chaqiramiz (JSONP usuli)
+	const script = document.createElement('script')
+	// t= parametri keshni oldini oladi, callback= bizning funksiyani ulaydi
+	script.src = `${WEB_APP_URL}?callback=handleResponse&t=${new Date().getTime()}`
+	document.body.appendChild(script)
 }
 
-/**
- * Sahifa to'liq yuklangandan so'ng funksiyani ishga tushirish
- * DOMContentLoaded - bu window.onload'dan ko'ra tezroq va xavfsizroq usul
- */
-document.addEventListener('DOMContentLoaded', () => {
-	updateDashboardStats()
-})
+document.addEventListener('DOMContentLoaded', updateDashboardStats)

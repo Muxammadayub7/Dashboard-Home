@@ -2,6 +2,17 @@
 <html lang="uz">
 
 <head>
+
+ <script>
+  // 1. Birinchi navbatda loginni tekshiramiz
+  if (localStorage.getItem('isLoggedIn') !== 'true') {
+    // 2. Agar login bo'lmasa, sahifani yuklashni to'xtatamiz
+    window.stop()
+    // 3. Login sahifasiga darrov yo'naltiramiz
+    window.location.replace('./login.html')
+  }
+</script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clients</title>
