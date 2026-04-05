@@ -2,9 +2,45 @@
 const SHEET_ID = '1dFG3242L3t6f9W9odUWeeqj8QvCZjFaiJMk8-m11Afg';
 const READ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=clients`;
 const POST_URL =
-	'https://script.google.com/macros/s/AKfycbx8Vy2VdLJhPe_PxSe8IXC7aUGpxv-y2G8MkVOBmvrc491WlvhMIvoTSa68ObQStfwF/exec'
+	'https://script.google.com/macros/s/AKfycbz25cNXy1jriHUX2nT9k2_xI_ZOSEpJpoMjEstyH1-C82le4QuURt88gf6yGwpD5m-M/exec'
 
 let allData = [];
+
+function getNumericCell(cells, index) {
+  const raw = cells[index]?.v;
+  const value = parseFloat(raw);
+  return Number.isNaN(value) ? 0 : value;
+}
+
+function formatSheetDate(cell) {
+  if (!cell) return new Date().toLocaleDateString('uz-UZ');
+  if (cell.f) return String(cell.f);
+
+  const value = cell.v;
+  if (value instanceof Date) {
+    return value.toLocaleDateString('uz-UZ');
+  }
+
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value);
+  }
+
+  return new Date().toLocaleDateString('uz-UZ');
+}
+
+function parseClientRow(row) {
+  const c = row.c || [];
+  if (!c[0] || c[0].v === null) return null;
+
+  return {
+    ism: String(c[0]?.v || '').trim(),
+    telefon: String(c[1]?.f || c[1]?.v || '').trim(),
+    tarif: String(c[2]?.v || '').trim(),
+    tolangan: getNumericCell(c, 3),
+    qarz: getNumericCell(c, 4),
+    sana: formatSheetDate(c[5]),
+  };
+}
 
 async function fetchSheetRows() {
   const res = await fetch(READ_URL);
@@ -17,22 +53,43 @@ function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function waitForClientSync(expectedData, timeoutMs = 15000) {
+async function postClientToSheet(data) {
+  const body = new URLSearchParams();
+  body.append('ism', data.ism);
+  body.append('telefon', data.telefon);
+  body.append('tarif', data.tarif);
+  body.append('tolangan', String(data.tolangan));
+  body.append('qarz', String(data.qarz));
+
+  await fetch(POST_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+    },
+          body: body.toString(),
+  });
+}
+
+function isMatchingClient(client, expectedData) {
+  return (
+    client.ism.toLowerCase() === String(expectedData.ism || '').trim().toLowerCase() &&
+    client.telefon === String(expectedData.telefon || '').trim() &&
+    client.tarif === String(expectedData.tarif || '').trim() &&
+    client.tolangan === expectedData.tolangan &&
+    client.qarz === expectedData.qarz
+  );
+}
+
+async function waitForClientSync(expectedData, initialRowCount, timeoutMs = 15000) {
   const startedAt = Date.now();
-  const expectedName = String(expectedData.ism || '').trim().toLowerCase();
 
   while (Date.now() - startedAt < timeoutMs) {
     const rows = await fetchSheetRows();
-    const isSynced = rows.some(row => {
-      const c = row.c || [];
-      const ism = String(c[0]?.v || '').trim().toLowerCase();
-      const tolangan = parseFloat(c[6]?.v) || 0;
-
-      return (
-        ism === expectedName &&
-        tolangan === expectedData.tolangan
-      );
-    });
+    const parsedRows = rows.map(parseClientRow).filter(Boolean);
+    const hasNewRow = parsedRows.length > initialRowCount;
+    const lastClient = parsedRows[parsedRows.length - 1];
+    const isSynced = hasNewRow && lastClient && isMatchingClient(lastClient, expectedData);
 
     if (isSynced) return true;
     await delay(500);
@@ -79,27 +136,21 @@ async function initDashboard() {
     allData = [];
 
     rows.forEach((row) => {
-      const c = row.c;
-      if (!c || !c[0] || c[0].v === null) return;
+      const user = parseClientRow(row);
+      if (!user) return;
 
-      // ⚠️ REAL USTUNLAR (image_55337d.png asosida):
-      // A(0)=Ism, B(1)=Tel, G(6)=Jami to'langan, H(7)=Debt
-      const user = {
-        ism: c[0]?.v || '',
-        telefon: c[1]?.v || '',
-        tolangan: parseFloat(c[6]?.v) || 0, // G ustun
-        qarz: parseFloat(c[7]?.v) || 0      // H ustun
-      };
+      const rowDelay = Math.min(allData.length * 60, 720);
 
       allData.push(user);
       totalPaid += user.tolangan;
       totalDebt += user.qarz;
 
       html += `
-        <tr>
-          <td>${new Date().toLocaleDateString()}</td>
+        <tr style="--row-delay:${rowDelay}ms">
+          <td>${user.sana}</td>
           <td><b>${user.ism}</b></td>
           <td>${user.telefon}</td>
+          <td><span class="badge-gold">${user.tarif || 'GOLD'}</span></td>
           <td style="color:#20c997; font-weight:bold;">+${user.tolangan.toLocaleString()} UZS</td>
           <td style="color:${user.qarz > 0 ? '#fa5252' : '#20c997'}; font-weight:bold;">
             ${user.qarz.toLocaleString()} UZS
@@ -155,17 +206,15 @@ async function addClient() {
   }
 
   try {
-    await fetch(POST_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify(data)
-    });
+    const beforeRows = await fetchSheetRows();
+
+    await postClientToSheet(data);
 
     if (saveBtn) {
       saveBtn.innerText = 'Tekshirilmoqda...';
     }
 
-    const synced = await waitForClientSync(data);
+    const synced = await waitForClientSync(data, beforeRows.length);
 
     if (!synced) {
       throw new Error('Yozuv Sheetsda vaqtida ko‘rinmadi');

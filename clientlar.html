@@ -5,7 +5,7 @@
 
  <script>
   // 1. Birinchi navbatda loginni tekshiramiz
-  if (localStorage.getItem('isLoggedIn') !== 'true') {
+  if (sessionStorage.getItem('isLoggedIn') !== 'true') {
     // 2. Agar login bo'lmasa, sahifani yuklashni to'xtatamiz
     window.stop()
     // 3. Login sahifasiga darrov yo'naltiramiz
@@ -33,12 +33,26 @@
     </nav>
   </aside>
 
-    <h1 style="font-size: 32px; margin: 21px 0;">Clients</h1>
+    <section class="page-hero">
+      <div>
+        <span class="eyebrow">Client Base</span>
+        <h1>Clients</h1>
+        <p>Barcha mijozlar, to'lovlar va qarzdorlik holati bitta joyda.</p>
+      </div>
+      <div class="hero-badge">Live list</div>
+    </section>
 
     <div class="table-responsive">
+      <div class="table-header">
+        <div>
+          <h3>Mijozlar ro'yxati</h3>
+          <p>Sheets bilan bog'langan real vaqt jadvali</p>
+        </div>
+      </div>
       <table>
         <thead>
           <tr>
+            <th>Sana</th>
             <th>Ism</th>
             <th>Telefon</th>
             <th>Tarif</th>

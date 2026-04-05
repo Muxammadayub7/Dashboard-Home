@@ -12,6 +12,7 @@ body {
 .dashboard-wrapper {
   display: flex;
   min-height: 100vh;
+  animation: pageFadeIn 0.7s ease;
 }
 
 .sidebar {
@@ -26,6 +27,7 @@ body {
   flex-direction: column;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 100;
+  animation: sidebarSlideIn 0.7s ease;
 }
 
 .main-content {
@@ -33,6 +35,13 @@ body {
   margin-left: 290px;
   /* Sidebar uchun joy */
   padding: 40px;
+}
+
+.header {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: sectionRise 0.7s ease forwards;
+  animation-delay: 0.08s;
 }
 
 /* 3. Menyu va Tugmalar */
@@ -58,21 +67,29 @@ body {
 }
 
 .add-btn {
-  background: #6dbd71;
-  color: white;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.24), transparent 30%),
+    linear-gradient(135deg, #7cf2a4, #37bb73 55%, #178f57);
+  color: #0b2317;
   border: none;
-  padding: 12px 25px;
-  border-radius: 12px;
-  font-weight: 600;
+  padding: 13px 24px;
+  border-radius: 16px;
+  font-weight: 800;
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
   margin-bottom: 20px;
+  box-shadow: 0 16px 28px rgba(23, 143, 87, 0.28);
+  letter-spacing: 0.01em;
 }
 
 .add-btn:hover {
-  background: #4caf50;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(109, 189, 113, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 22px 36px rgba(23, 143, 87, 0.36);
+  filter: brightness(1.03);
+}
+
+.add-btn:active {
+  transform: translateY(0);
 }
 
 /* 4. Kartochkalar (Cards) */
@@ -90,18 +107,33 @@ body {
   border-radius: 20px;
   color: white;
   transition: 0.4s;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: cardReveal 0.65s ease forwards;
 }
 
 .card:hover {
   transform: translateY(-5px);
 }
 
+.cards .card:nth-child(1) {
+  animation-delay: 0.16s;
+}
+
+.cards .card:nth-child(2) {
+  animation-delay: 0.26s;
+}
+
 .green {
-  background: linear-gradient(135deg, #6dbd71, #43a047);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.22), transparent 30%),
+    linear-gradient(135deg, #7cf2a4, #35b86b 55%, #178f57);
 }
 
 .red {
-  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 30%),
+    linear-gradient(135deg, #ff9a8b, #ef5d63 52%, #c92d44);
 }
 
 .purple {
@@ -122,6 +154,10 @@ body {
   border-radius: 20px;
   color: #333;
   overflow-x: auto;
+  opacity: 0;
+  transform: translateY(28px);
+  animation: sectionRise 0.8s ease forwards;
+  animation-delay: 0.34s;
 }
 
 table {
@@ -140,6 +176,15 @@ th {
 td {
   padding: 15px;
   border-bottom: 1px solid #f6f9fc;
+}
+
+#tableBody tr {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+#tableBody tr.row-removing {
+  opacity: 0;
+  transform: translateX(18px);
 }
 
 /* 6. Modal Oynasi (Eng muhimi) */
@@ -179,6 +224,52 @@ td {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sidebarSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes sectionRise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -256,6 +347,32 @@ td {
   font-weight: bold;
 }
 
+.btn-delete-row {
+  border: none;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #ff8a8a, #db3c55);
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(219, 60, 85, 0.2);
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-delete-row:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow: 0 14px 22px rgba(219, 60, 85, 0.28);
+}
+
+.btn-delete-row:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
 .logo {
   text-decoration: none;
   color: white;
@@ -268,4 +385,158 @@ td {
 #phone {
   display: none;
   transition: 0.3s ease;
+}
+
+@media (max-width: 980px) {
+  .dashboard-wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    width: auto;
+    height: auto;
+    border-right: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 28px 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    padding: 18px 16px;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .menu {
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .menu a {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .main-content {
+    padding: 18px 12px 28px;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 28px;
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .cards {
+    gap: 14px;
+  }
+
+  .card {
+    min-width: 0;
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .card .value {
+    font-size: 24px;
+  }
+
+  .table-responsive {
+    padding: 14px 10px;
+    border-radius: 18px;
+  }
+
+  table {
+    min-width: 620px;
+  }
+
+  th,
+  td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .btn-delete-row {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .modal-content {
+    width: calc(100% - 24px);
+    max-width: none;
+    margin: 18px auto;
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .sidebar {
+    padding: 14px 12px;
+  }
+
+  .menu a {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .main-content {
+    padding: 14px 8px 22px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .card {
+    padding: 18px 14px;
+  }
+
+  .card .value {
+    font-size: 21px;
+  }
+
+  .table-responsive {
+    padding: 12px 8px;
+    border-radius: 16px;
+  }
+
+  table {
+    min-width: 560px;
+  }
+
+  .modal-content {
+    width: calc(100% - 16px);
+    padding: 18px 12px;
+    border-radius: 16px;
+  }
+
+  .modal-content h2 {
+    font-size: 18px;
+  }
+
+  .modal-content input,
+  .modal-content select,
+  .save-btn {
+    font-size: 14px;
+  }
 }

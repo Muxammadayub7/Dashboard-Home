@@ -4,7 +4,7 @@
 <head>
 
   <script>
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
       window.stop()
       window.location.replace('./login.html')
     }
@@ -18,6 +18,13 @@
 </head>
 
 <body>
+  <div class="page-loader show" id="pageLoader" aria-hidden="false">
+    <div class="loader-card">
+      <div class="loader-spinner"></div>
+      <p class="loader-title">Yuklanmoqda...</p>
+      <p class="loader-text">Dashboard ma'lumotlari olinmoqda</p>
+    </div>
+  </div>
 
   <div class="dashboard-wrapper">
     <aside class="sidebar">
@@ -45,12 +52,6 @@
           <p>Umumiy savdo hajmi</p>
         </div>
       
-        <div class="card green">
-          <h3>DOXOD (Tushum)</h3>
-          <span class="value" id="income">0 UZS</span>
-          <p>Jami tushgan naqd pul</p>
-        </div>
-      
         <div class="card red">
           <h3>RASXOD (Qarzdorlik)</h3>
           <span class="value" id="expense">0 UZS</span>
@@ -62,15 +63,27 @@
           <span class="value" id="balance">0 UZS</span>
           <p>Hozirgi naqd pul qoldig'i</p>
         </div>
+
+        <div class="card blue">
+          <h3>MIJOZLAR SONI</h3>
+          <span class="value" id="clientsCount">0</span>
+          <p>Jami ro'yxatdagi mijozlar</p>
+        </div>
+
+        <div class="card red">
+          <h3>QARZDORLAR SONI</h3>
+          <span class="value" id="debtorsCount">0</span>
+          <p>Qarzi bor mijozlar soni</p>
+        </div>
       </div>
 
       <div class="chart-container">
         <div class="chart-header">
           <div>
-            <h3>Oylik tahlil</h3>
-            <p>Dashboarddagi asosiy ko'rsatkichlar vizual ko'rinishda</p>
+            <h3>Market Panel</h3>
+            <p>Asosiy ko'rsatkichlar trading board uslubida</p>
           </div>
-          <span class="chart-badge">Live data</span>
+          <span class="chart-badge">Live board</span>
         </div>
         <div class="dummy-chart" id="analysisChart">
           <div class="chart-placeholder">Diagramma yuklanmoqda...</div>
