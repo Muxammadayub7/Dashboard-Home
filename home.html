@@ -2,6 +2,14 @@
 <html lang="uz">
 
 <head>
+
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.stop()
+      window.location.replace('./login.html')
+    }
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Home</title>
@@ -10,9 +18,14 @@
 </head>
 
 <body>
+
   <div class="dashboard-wrapper">
     <aside class="sidebar">
-      <div class="logo"><a class="logo" href="./home.html">Admin</a></div>
+      <div class="logo">
+        <a href="./home.html" class="logo">
+          Admin
+        </a>
+      </div>
       <nav class="menu">
         <a href="home.html" class="active">📊 Dashboard</a>
         <a href="./clientlar.html">👥 Clients</a>
@@ -29,37 +42,45 @@
         <div class="card blue">
           <h3>JAMI SOTUV</h3>
           <span class="value" id="totalSales">0 UZS</span>
+          <p>Umumiy savdo hajmi</p>
         </div>
-
+      
         <div class="card green">
           <h3>DOXOD (Tushum)</h3>
           <span class="value" id="income">0 UZS</span>
+          <p>Jami tushgan naqd pul</p>
         </div>
-
+      
         <div class="card red">
           <h3>RASXOD (Qarzdorlik)</h3>
           <span class="value" id="expense">0 UZS</span>
+          <p>Umumiy qarzdorlik</p>
         </div>
-
+      
         <div class="card purple">
           <h3>KASSADA QOLDIQ</h3>
           <span class="value" id="balance">0 UZS</span>
+          <p>Hozirgi naqd pul qoldig'i</p>
         </div>
       </div>
 
       <div class="chart-container">
-        <h3>Oylik tahlil (Diagramma)</h3>
-        <div class="dummy-chart">
-          <div class="bar" style="height: 60%;"></div>
-          <div class="bar" style="height: 80%;"></div>
-          <div class="bar" style="height: 40%;"></div>
-          <div class="bar" style="height: 90%;"></div>
+        <div class="chart-header">
+          <div>
+            <h3>Oylik tahlil</h3>
+            <p>Dashboarddagi asosiy ko'rsatkichlar vizual ko'rinishda</p>
+          </div>
+          <span class="chart-badge">Live data</span>
+        </div>
+        <div class="dummy-chart" id="analysisChart">
+          <div class="chart-placeholder">Diagramma yuklanmoqda...</div>
         </div>
       </div>
     </main>
   </div>
 
   <script src="./js/home.js"></script>
+
 </body>
 
 </html>

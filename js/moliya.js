@@ -6,6 +6,43 @@ const POST_URL =
 
 let allData = []
 
+async function fetchSheetRows() {
+	const res = await fetch(READ_URL)
+	const text = await res.text()
+	const json = JSON.parse(
+		text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1),
+	)
+	return json.table.rows || []
+}
+
+function delay(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+async function waitForClientSync(expectedData, timeoutMs = 15000) {
+	const startedAt = Date.now()
+	const expectedName = String(expectedData.ism || '').trim().toLowerCase()
+
+	while (Date.now() - startedAt < timeoutMs) {
+		const rows = await fetchSheetRows()
+		const isSynced = rows.some(row => {
+			const c = row.c || []
+			const ism = String(c[0]?.v || '').trim().toLowerCase()
+			const tolangan = parseFloat(c[6]?.v) || 0
+
+			return (
+				ism === expectedName &&
+				tolangan === expectedData.tolangan
+			)
+		})
+
+		if (isSynced) return true
+		await delay(500)
+	}
+
+	return false
+}
+
 // 🚀 2. MODAL VA INPUTLARNI BOSHQARISH
 function openModal() {
 	const modal = document.getElementById('financeModal')
@@ -38,12 +75,7 @@ async function initDashboard() {
 			'<tr><td colspan="5" style="text-align:center;">Yuklanmoqda... ⏳</td></tr>'
 
 	try {
-		const res = await fetch(READ_URL)
-		const text = await res.text()
-		const json = JSON.parse(
-			text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1),
-		)
-		const rows = json.table.rows
+		const rows = await fetchSheetRows()
 
 		let totalPaid = 0
 		let totalDebt = 0
@@ -125,7 +157,7 @@ async function addClient() {
 
 	if (saveBtn) {
 		saveBtn.disabled = true
-		saveBtn.innerText = 'Saqlash...'
+		saveBtn.innerText = 'Yuborildi...'
 	}
 
 	try {
@@ -135,17 +167,26 @@ async function addClient() {
 			body: JSON.stringify(data),
 		})
 
-		alert('Saqlandi! ✅')
+		if (saveBtn) {
+			saveBtn.innerText = 'Tekshirilmoqda...'
+		}
+
+		const synced = await waitForClientSync(data)
+
+		if (!synced) {
+			throw new Error('Yozuv Sheetsda vaqtida ko‘rinmadi')
+		}
+
+		await initDashboard()
+
+		alert('Saqlandi va Sheetsga tushdi ✅')
 		closeModal()
 
-		// Formani tozalash
 		inputs.forEach(input => {
 			if (input.type !== 'select-one') input.value = ''
 		})
-
-		setTimeout(initDashboard, 1500)
 	} catch (err) {
-		alert('Xatolik yuz berdi ❌')
+		alert('Sheetsga tushmadi yoki kechikdi ❌')
 		console.error(err)
 	} finally {
 		if (saveBtn) {
