@@ -1,0 +1,183 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #140a27;
+  color: #333;
+}
+
+.sidebar {
+  width: 290px;
+  height: 100vh;
+  background-color: #1a143d;
+  padding: 30px 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+}
+
+.logo a {
+  font-size: 30px;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}
+
+/* 3. Menyu stili */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu a {
+  color: #b5b5c3;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.menu a.active,
+.menu a:hover {
+  background: #2c1a4d;
+  color: white;
+}
+
+.container {
+  padding: 40px 10px;
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+h1 {
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.card {
+  flex: 1;
+  min-width: 291px;
+  padding: 20px;
+  border-radius: 16px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.card .value {
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 10px;
+  display: block;
+}
+
+.green {
+  background: #6dbd71;
+  transition: all 0.4s;
+}
+
+.green:hover {
+  transform: translateY(-2px);
+  animation: alternate;
+}
+
+
+.purple {
+  background: #2c1a4d;
+  transition: all 0.4s;
+}
+
+.purple:hover {
+  transform: translateY(-2px);
+  animation: alternate;
+}
+
+
+.red {
+  background: #d32f2f;
+  transition: all 0.4s;
+}
+
+.red:hover {
+  transform: translateY(-2px);
+  animation: alternate;
+}
+
+.table-responsive {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+
+th {
+  background-color: #f8f9fa;
+  color: #8898aa;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 15px;
+  border-bottom: 1px solid #ebf1f6;
+  text-align: left;
+}
+
+td {
+  padding: 15px;
+  font-size: 14px;
+  color: #32325d;
+  border-bottom: 1px solid #f6f9fc;
+}
+
+.badge-gold {
+  background: #fff4e5;
+  color: #ffa500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.text-danger {
+  color: #f5365c;
+  font-weight: 600;
+}
+
+.text-success {
+  color: #2dce89;
+  font-weight: 600;
+}
+
+.logo {
+  font-size: 30px;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+}

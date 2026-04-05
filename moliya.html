@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moliya | Buxgalteriya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/moliya.css">
+</head>
+
+<body>
+
+  <div class="dashboard-wrapper">
+      <aside class="sidebar">
+        <div class="logo">
+          <a href="./home.html" class="logo">
+            Admin
+          </a>
+        </div>
+        <nav class="menu">
+          <a href="home.html" class="active">📊 Dashboard</a>
+          <a href="./clientlar.html">👥 Clients</a>
+          <a href="./moliya.html">💰 Moliya</a>
+        </nav>
+      </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <h1>Moliyaviy Amaliyotlar</h1>
+        <button class="add-btn" onclick="openModal()">+ Kirim/Chiqim qo'shish</button>
+      </header>
+
+      <div class="cards mini-cards">
+        <div class="card green">
+          <h3>Kirim</h3>
+          <span class="value" id="totalIn">0</span>
+        </div>
+        <div class="card red">
+          <h3>Chiqim</h3>
+          <span class="value" id="totalOut">0</span>
+        </div>
+      </div>
+
+    <div id="financeModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Yangi amaliyot</h2>
+    
+        <select id="type" onchange="togglePhoneInput()">
+          <option value="kirim">Kirim (O'quvchi to'lovi)</option>
+          <option value="chiqim">Chiqim (Xarajatlar)</option>
+          <option value="jihoz">Jihozlar (Sotib olish)</option>
+          <option value="ijara">Bino ijarasi</option>
+        </select>
+    
+        <input type="text" id="desc" placeholder="Ism Familiya yoki Izoh">
+    
+        <input type="text" id="phone" placeholder="Telefon (Kirim bo'lsa)">
+    
+        <input type="number" id="amount" placeholder="Summa">
+    
+        <select id="tarif">
+          <option value="GOLD">GOLD</option>
+          <option value="SILVER">SILVER</option>
+        </select>
+    
+        <button class="save-btn" onclick="saveTransaction()">Saqlash</button>
+      </div>
+    </div>
+
+      <div class="table-responsive">
+        <h3>Oxirgi pul harakatlari</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Sana</th>
+              <th>Turi</th>
+              <th>Izoh</th>
+              <th>Summa</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="financeBody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="./js/moliya.js"></script>
+</body>
+
+</html>
